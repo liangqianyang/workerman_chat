@@ -113,7 +113,6 @@
                 }
             /*保存聊天数据*/
             case "save" :
-                console.log(new Date().valueOf())
                 save_message(message);
                 if (message.is_read == 1) {
                     $('.shop-online').text('在线')
@@ -329,6 +328,14 @@
             }
         })
     })
+
+    //回车事件绑定
+    $('.send-btn').bind('keyup', function(event) {
+        if (event.keyCode == "13") {
+            //回车执行查询
+            $('.send-btn').click();
+        }
+    });
 </script>
 </body>
 </html>
