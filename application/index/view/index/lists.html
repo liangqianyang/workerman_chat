@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">-->
+    <meta name="format-detection" content="telephone=no"/>
+    <title>沟通中</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/newcj/css/themes.css?v=2017129">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/newcj/css/h5app.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/newcj/fonts/iconfont.css?v=2016070717">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/newcj/css/chat_list.css">
+    <script src="__STATIC__//newcj/js/jquery.min.js"></script>
+    <script src="__STATIC__/newcj/js/dist/flexible/flexible_css.debug.js"></script>
+    <script src="__STATIC__/newcj/js/dist/flexible/flexible.debug.js"></script>
+
+</head>
+<body>
+<div class='fui-page-group'>
+    <div class="fui-statusbar"></div>
+    <div class='fui-page chat-page'>
+        <div class="fui-header">
+            <div class="title">消息列表</div>
+            <div class="fui-header-right"></div>
+        </div>
+
+        <div class="fui-content navbar chat-fui-content" style="padding-bottom: 2rem;">
+
+        </div>
+    </div>
+</div>
+</body>
+<script>
+
+    var API_URL = "http://chat.com/api/chat/"
+    var from_id = "{$from_id}";
+
+    ws = new WebSocket("ws://127.0.0.1:8282");
+
+    ws.onmessage = function (e) {
+        var message = eval("(" + e.data + ")");
+
+        switch (message.type) {
+            /*初始化绑定uid*/
+            case  "init":
+                var bind = '{"type":"bind","from_id":"' + from_id + '"}'
+                ws.send(bind) //绑定uid
+                list();
+                break;
+            /*列表页数据刷新*/
+            case "load_list":
+                console.log(new Date().valueOf())
+                $(".chat-fui-content").html("");
+                list();
+                break;
+        }
+    }
+
+    function list() {
+        $.post(
+            API_URL + "get_list",
+            {id: from_id},
+            function (res) {
+                $.each(res, function (index, data) {
+                    /*消息类型判断*/
+                    if (data.last_message.type == 1) {
+                        html = '<p class="chat-text singleflow-ellipsis">' + replace_em(data.last_message.content) + '</p>'
+                    } else {
+                        html = '<p class="chat-text singleflow-ellipsis">图片</p>'
+                    }
+
+                    /**未读数量判断**/
+                    if (data.countNoRead == 0) {
+                        read = ' '
+                    } else {
+                        read = '<span class="badge" style="top: -0.1rem;left: 80%;">' + data.countNoRead + '</span>'
+                    }
+                    $('.fui-content').append(
+                        '<div class="chat-list flex" onclick=redi("' + data.chat_page + '")>\n' +
+                        '                <div class="chat-img" style="background-image: url(' + data.head_url + ')">' + read + '</div>\n' +
+                        '                <div class="chat-info">\n' +
+                        '                    <p class="chat-merch flex">\n' +
+                        '                        <span class="title t-28">' + data.username + '</span>\n' +
+                        '                        <span class="time">' + mydate(data.last_message.time) + '</span>\n' +
+                        '                    </p>' + html + '</div>\n' +
+                        '</div>'
+                    )
+                })
+            }, 'json'
+        )
+    }
+
+    // $(function () {
+    //     $.post(
+    //         API_URL + "get_list",
+    //         {id: from_id},
+    //         function (res) {
+    //             $.each(res, function (index, data) {
+    //                 console.log(data)
+    //                 /*消息类型判断*/
+    //                 if (data.last_message.type == 1) {
+    //                     html = '<p class="chat-text singleflow-ellipsis">' + replace_em(data.last_message.content) + '</p>'
+    //                 } else {
+    //                     html = '<p class="chat-text singleflow-ellipsis">图片</p>'
+    //                 }
+    //
+    //                 /**未读数量判断**/
+    //                 if (data.countNoRead == 0) {
+    //                     read = ' '
+    //                 } else {
+    //                     read = '<span class="badge" style="top: -0.1rem;left: 80%;">' + data.countNoRead + '</span>'
+    //                 }
+    //                 $('.fui-content').append(
+    //                     '<div class="chat-list flex" onclick=redi("' + data.chat_page + '")>\n' +
+    //                     '                <div class="chat-img" style="background-image: url(' + data.head_url + ')">' + read + '</div>\n' +
+    //                     '                <div class="chat-info">\n' +
+    //                     '                    <p class="chat-merch flex">\n' +
+    //                     '                        <span class="title t-28">' + data.username + '</span>\n' +
+    //                     '                        <span class="time">' + mydate(data.last_message.time) + '</span>\n' +
+    //                     '                    </p>' + html + '</div>\n' +
+    //                     '</div>'
+    //                 )
+    //             })
+    //         }, 'json'
+    //     )
+    //
+    //
+    // })
+
+
+    /**
+     *根据时间戳格式化为日期形式
+     */
+    function mydate(nS) {
+
+        return new Date(parseInt(nS) * 1000).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+    }
+
+    //查看结果
+
+    function replace_em(str) {
+
+        str = str.replace(/\</g, '&lt;');
+
+        str = str.replace(/\>/g, '&gt;');
+
+        str = str.replace(/\n/g, '<br/>');
+
+        str = str.replace(/\[em_([0-9]*)\]/g, '<img src="__STATIC__/qqFace/arclist/$1.gif" border="0" />');
+
+        return str;
+
+    }
+
+    function redi(url) {
+        window.location.href = url;
+    }
+</script>
+
+</html>
