@@ -329,10 +329,10 @@
         })
     })
 
+
     //回车事件绑定
-    $('.send-btn').bind('keyup', function(event) {
-        if (event.keyCode == "13") {
-            //回车执行查询
+    $(document).keyup(function(event){
+        if(event.keyCode ==13){
             $('.send-btn').click();
         }
     });
