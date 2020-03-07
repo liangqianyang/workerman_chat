@@ -12,6 +12,7 @@ class Index extends Controller
         $to_id = input("to_id");
         $this->assign('from_id', $from_id);
         $this->assign('to_id', $to_id);
+        $this->assign('date', date('Y-m-d',time()));
         return view();
     }
 

@@ -30,7 +30,7 @@
         <div class="fui-content navbar" style="padding:1.2rem 0 1.35rem 0;">
             <div class="chat-content">
                 <p style="display: none;text-align: center;padding-top: 0.5rem" id="more"><a>加载更多</a></p>
-                <p class="chat-time"><span class="time">2017-11-12</span></p>
+                <p class="chat-time"><span class="time">{$date}</span></p>
 
                 <!--<div class="chat-text section-left flex">-->
                 <!--<span class="char-img"-->
@@ -68,7 +68,7 @@
 
     var is_online //对方是否在线
 
-    var API_URL = "http://chat.com/api/chat/"
+    var API_URL = "http://chat.lqy-comic.com/"
 
     var ws = new WebSocket("ws://127.0.0.1:8282")
 
