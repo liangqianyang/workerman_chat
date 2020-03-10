@@ -6,11 +6,11 @@
 [![Latest Unstable Version](https://poser.pugx.org/topthink/think/v/unstable)](https://packagist.org/packages/topthink/think)
 [![License](https://poser.pugx.org/topthink/think/license)](https://packagist.org/packages/topthink/think)
 
-## 方位地址
+## 访问地址
  ### http://chat.lqy-comic.com/?from_id=85&to_id=89
  ### http://chat.lqy-comic.com/?from_id=89&to_id=85
  
- ###列表页面 :http://chat.lqy-comic.com/index/index/lists.html?from_id=89
+ ### 列表页面 :http://chat.lqy-comic.com/index/index/lists.html?from_id=89
  
  数据库数据暂时只有几条，主要是作为demo使用
 
